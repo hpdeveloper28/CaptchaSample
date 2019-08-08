@@ -1,7 +1,8 @@
-package com.captcha.app
+package com.captcha.captcha
 
 import android.content.Context
 import android.graphics.*
+import com.captcha.app.R
 import java.util.concurrent.ThreadLocalRandom
 
 class MathCaptchaView(context: Context) : Captcha(context) {
@@ -30,8 +31,10 @@ class MathCaptchaView(context: Context) : Captcha(context) {
             one = two
             two = temp
         }
+        prepareAnswer(one, two, operator(math))
+        prepareTextToSpeechSentence(one, two, operator(math))
         textToBeDrawn =
-            one.toString().toCharArray()[0].toString() + operator(math).toString() + two.toString().toCharArray()[0].toString() + "="
+            one.toString().toCharArray()[0].toString() + operator(math) + two.toString().toCharArray()[0].toString() + equalToPair.first
         paint = Paint()
         paint.color = captchaTextColor
         paint.textSize = defaultTextSize
@@ -55,12 +58,34 @@ class MathCaptchaView(context: Context) : Captcha(context) {
         finalY = ThreadLocalRandom.current().nextInt(rangeY.first.toInt(), rangeY.second.toInt()).toFloat()
     }
 
-    private fun operator(math: Int): Char {
-        when (math) {
-            0 -> return '+'
-            1 -> return '-'
+    override fun prepareAnswer(firstDigit: Int, secondDigit: Int, operator: String) {
+        answer = when (operator) {
+            plusPair.first -> firstDigit.plus(secondDigit)
+            minusPair.first -> firstDigit.minus(secondDigit)
+            else -> firstDigit.plus(secondDigit)
         }
-        return '+'
+    }
+
+    override fun verifyAnswer(input: String): Boolean {
+        return input.toInt() == answer
+    }
+
+    override fun prepareTextToSpeechSentence(firstDigit: Int, secondDigit: Int, operator: String) {
+        ttsSentence = when (operator) {
+            plusPair.first -> firstDigit.toString() + " " + plusPair.second + " " + secondDigit.toString() + " " + equalToPair.second
+            minusPair.first -> firstDigit.toString() + " " + minusPair.second + " " + secondDigit.toString() + " " + equalToPair.second
+            else -> firstDigit.toString() + " " + plusPair.second + " " + secondDigit.toString() + " " + equalToPair.second
+        }
+    }
+
+    override fun getTextToSpeechSentence(): String = ttsSentence
+
+    private fun operator(math: Int): String {
+        when (math) {
+            0 -> return plusPair.first
+            1 -> return minusPair.first
+        }
+        return plusPair.first
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -78,7 +103,7 @@ class MathCaptchaView(context: Context) : Captcha(context) {
             finalY = ThreadLocalRandom.current().nextInt(finalY.toInt() - maxMovementY, finalY.toInt() + maxMovementY)
                 .toFloat()
 
-            if (!(chars[i].toString().trim() == "=" || chars[i].toString().trim() == "+" || chars[i].toString().trim() == "-")) {
+            if (!(chars[i].toString().trim() == equalToPair.first || chars[i].toString().trim() == "+" || chars[i].toString().trim() == "-")) {
                 paint.textSkewX = random.nextFloat() - random.nextFloat()
             }
             canvas.drawText(chars[i].toString(), finalX, finalY, paint)

@@ -3,9 +3,11 @@ package com.captcha.app
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import com.captcha.captcha.Captcha
+import com.captcha.captcha.MathCaptchaBuilder
 import kotlinx.android.synthetic.main.activity_main.*
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,8 +31,17 @@ class MainActivity : AppCompatActivity() {
 
         btnGenerateCaptcha.setOnClickListener {
             captchaParentView.removeAllViews()
-            captchaParentView.addView(getCaptchaView())
+            val captchaView = getCaptchaView()
+            captchaParentView.addView(captchaView)
         }
+
+        val handler = Handler()
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                btnGenerateCaptcha.performClick()
+                handler.postDelayed(this, 1000)
+            }
+        }, 1000)
 
     }
 

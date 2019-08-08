@@ -1,4 +1,4 @@
-package com.captcha.app
+package com.captcha.captcha
 
 import android.content.Context
 import android.graphics.Color
@@ -37,6 +37,13 @@ class MathCaptchaBuilder(private val context: Context) {
     }
 
     fun build(): Captcha {
-        return MathCaptchaView(context, parentViewWidth, parentViewHeight, minNumber, maxNumber, captchaTextColor)
+        return MathCaptchaView(
+            context,
+            parentViewWidth,
+            parentViewHeight,
+            minNumber,
+            maxNumber,
+            captchaTextColor
+        )
     }
 }

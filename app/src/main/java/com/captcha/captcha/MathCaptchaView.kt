@@ -7,15 +7,19 @@ import java.util.concurrent.ThreadLocalRandom
 
 class MathCaptchaView(context: Context) : Captcha(context) {
 
-    constructor(context: Context, width: Int, height: Int, minNum: Int, maxNum: Int, captchaTextColor: Int) : this(
+    constructor(context: Context, width: Int, height: Int, minNum: Int, maxNum: Int, textColor: Int) : this(
         context
     ) {
-        prepareBackground()
-        prepareCaptcha(width, height, minNum, maxNum, captchaTextColor)
+        parentWidth = width
+        parentHeight = height
+        minimumNumber = minNum
+        maximumNumber = maxNum
+        captchaTextColor = textColor
+        refreshCaptcha()
     }
 
     override fun prepareBackground() {
-        background = context.getDrawable(R.drawable.bg_gradient)
+        background = gradientBackgroundHelper.getGradientBackground()
     }
 
     override fun prepareCaptcha(width: Int, height: Int, minNum: Int, maxNum: Int, captchaTextColor: Int) {
@@ -79,6 +83,11 @@ class MathCaptchaView(context: Context) : Captcha(context) {
     }
 
     override fun getTextToSpeechSentence(): String = ttsSentence
+
+    override fun refreshCaptcha() {
+        prepareBackground()
+        prepareCaptcha(parentWidth, parentHeight, minimumNumber, maximumNumber, captchaTextColor)
+    }
 
     private fun operator(math: Int): String {
         when (math) {

@@ -13,6 +13,7 @@ class MainActivity : AppCompatActivity() {
 
     private var width: Int = 0
     private var height: Int = 0
+    private lateinit var captchaView: Captcha
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,22 +25,21 @@ class MainActivity : AppCompatActivity() {
                 captchaParentView.viewTreeObserver.removeGlobalOnLayoutListener(this)
                 width = captchaParentView.measuredWidth
                 height = captchaParentView.measuredHeight
-                captchaParentView.addView(getCaptchaView())
+                captchaView = getCaptchaView()
+                captchaParentView.addView(captchaView)
 
             }
         })
 
         btnGenerateCaptcha.setOnClickListener {
-            captchaParentView.removeAllViews()
-            val captchaView = getCaptchaView()
-            captchaParentView.addView(captchaView)
+            captchaView.refreshCaptcha()
         }
 
         val handler = Handler()
         handler.postDelayed(object : Runnable {
             override fun run() {
                 btnGenerateCaptcha.performClick()
-                handler.postDelayed(this, 1000)
+                handler.postDelayed(this, 2000)
             }
         }, 1000)
 

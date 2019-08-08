@@ -7,6 +7,12 @@ import java.util.Random
 
 abstract class Captcha(context: Context) : View(context) {
 
+    protected val gradientBackgroundHelper = GradientBackgroundHelper()
+    protected var parentWidth: Int = 0
+    protected var parentHeight: Int = 0
+    protected var minimumNumber: Int = 0
+    protected var maximumNumber: Int = 0
+    protected var captchaTextColor: Int = 0
     protected var finalX: Float = 0.0f
     var finalY: Float = 0.0f
     lateinit var paint: Paint
@@ -27,4 +33,5 @@ abstract class Captcha(context: Context) : View(context) {
     abstract fun verifyAnswer(input: String): Boolean
     abstract fun prepareTextToSpeechSentence(firstDigit: Int, secondDigit: Int, operator: String)
     abstract fun getTextToSpeechSentence(): String
+    abstract fun refreshCaptcha()
 }

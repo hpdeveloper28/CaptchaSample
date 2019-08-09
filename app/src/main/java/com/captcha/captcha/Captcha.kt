@@ -35,5 +35,5 @@ abstract class Captcha(context: Context) : View(context) {
     abstract fun verifyAnswer(input: String): Boolean
     abstract fun prepareTextToSpeechSentence(firstDigit: Int, secondDigit: Int, operator: String)
     abstract fun getTextToSpeechSentence(): String
-    abstract fun refreshCaptcha()
+    abstract fun redrawCaptcha()
 }

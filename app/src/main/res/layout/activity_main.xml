@@ -5,18 +5,39 @@
                 android:layout_height="match_parent"
                 tools:context=".MainActivity">
 
-    <RelativeLayout
+    <com.captcha.captcha.CaptchaParentView
             android:layout_margin="16dp"
-            android:id="@+id/captchaParentView" android:layout_width="match_parent"
-            android:layout_centerInParent="true" android:layout_height="120dp">
+            android:id="@+id/captchaParentViewCustom"
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="120dp">
 
-
-    </RelativeLayout>
+    </com.captcha.captcha.CaptchaParentView>
 
     <Button android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:id="@+id/btnGenerateCaptcha"
-            android:layout_below="@+id/captchaParentView"
-            android:text="Generate Captcha"
+            android:id="@+id/btnRefreshCaptcha"
+            android:layout_below="@+id/captchaParentViewCustom"
+            android:text="Refresh Captcha"
             android:layout_marginTop="50dp"/>
+
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:id="@+id/btnSpeakCaptcha"
+            android:layout_below="@+id/btnRefreshCaptcha"
+            android:text="Speak"
+            android:layout_marginTop="10dp"/>
+
+    <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:id="@+id/edtText"
+              android:inputType="number"
+              android:digits="0123456789"
+              android:layout_below="@+id/btnSpeakCaptcha"
+              android:hint="Enter answer"
+              android:layout_marginTop="10dp"/>
+
+    <Button android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:id="@+id/btnVerify"
+            android:layout_below="@+id/edtText"
+            android:text="Verify answer"
+            android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

@@ -14,7 +14,7 @@ class MathCaptchaView(context: Context) : Captcha(context) {
         parentHeight = height
         minimumNumber = minNum
         maximumNumber = maxNum
-        refreshCaptcha()
+        redrawCaptcha()
     }
 
     /**
@@ -117,9 +117,9 @@ class MathCaptchaView(context: Context) : Captcha(context) {
     override fun getTextToSpeechSentence(): String = ttsSentence
 
     /**
-     * This function refreshes the captcha
+     * This function redraws the captcha
      */
-    override fun refreshCaptcha() {
+    override fun redrawCaptcha() {
         val colorPair = gradientBackgroundHelper.getGradientBackground(parentHeight)
         prepareBackground(colorPair.first)
         prepareCaptcha(parentWidth, parentHeight, minimumNumber, maximumNumber, colorPair.second)

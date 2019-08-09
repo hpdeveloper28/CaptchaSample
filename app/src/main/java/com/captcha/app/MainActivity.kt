@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCaptchaView(): Captcha {
-        return MathCaptchaBuilder(this@MainActivity).setParentViewWidth(width).setParentViewHeight(height)
-            .setMinNumber(1).setMaxNumber(9).setCaptchaTextColor(Color.RED).build()
+        return MathCaptchaBuilder(this@MainActivity).setParentViewWidth(width).setParentViewHeight(height).build()
     }
 }

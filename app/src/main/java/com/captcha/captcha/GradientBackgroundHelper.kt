@@ -7,51 +7,83 @@ import java.util.concurrent.ThreadLocalRandom
 
 class GradientBackgroundHelper {
 
+    data class quard<T1, T2, T3, T4>(val first: T1, val second: T2, val third: T3, val fourth: T4)
+
     private val blueStart = "#2356AE"
     private val blueMiddle = "#0D141C"
     private val blueEnd = "#517BEC"
+    private val blueTextColor = "#5B1046"
 
     private val purpleStart = "#3023AE"
     private val purpleMiddle = "#282461"
     private val purpleEnd = "#8B51EC"
+    private val purpleTextColor = "#686868"
 
     private val greenStart = "#006D1F"
     private val greenMiddle = "#014012"
     private val greenEnd = "#021305"
+    private val greenTextColor = "#4E7456"
 
     private val grayStart = "#B8B8B8"
     private val grayMiddle = "#625D5D"
     private val grayEnd = "#0A0000"
+    private val grayTextColor = "#C7C7C7"
 
     private val brownStart = "#8F7D5E"
     private val brownMiddle = "#220808"
     private val brownEnd = "#45220E"
+    private val brownTextColor = "#494A18"
 
     private val firstColorSet =
-        Triple(Color.parseColor(blueStart), Color.parseColor(blueMiddle), Color.parseColor(blueEnd))
+        quard(
+            Color.parseColor(blueStart),
+            Color.parseColor(blueMiddle),
+            Color.parseColor(blueEnd),
+            Color.parseColor(blueTextColor)
+        )
     private val secondColorSet =
-        Triple(Color.parseColor(purpleStart), Color.parseColor(purpleMiddle), Color.parseColor(purpleEnd))
+        quard(
+            Color.parseColor(purpleStart),
+            Color.parseColor(purpleMiddle),
+            Color.parseColor(purpleEnd),
+            Color.parseColor(purpleTextColor)
+        )
     private val thirdColorSet =
-        Triple(Color.parseColor(greenStart), Color.parseColor(greenMiddle), Color.parseColor(greenEnd))
+        quard(
+            Color.parseColor(greenStart),
+            Color.parseColor(greenMiddle),
+            Color.parseColor(greenEnd),
+            Color.parseColor(greenTextColor)
+        )
     private val forthColorSet =
-        Triple(Color.parseColor(grayStart), Color.parseColor(grayMiddle), Color.parseColor(grayEnd))
+        quard(
+            Color.parseColor(grayStart),
+            Color.parseColor(grayMiddle),
+            Color.parseColor(grayEnd),
+            Color.parseColor(grayTextColor)
+        )
     private val fifthColorSet =
-        Triple(Color.parseColor(brownStart), Color.parseColor(brownMiddle), Color.parseColor(brownEnd))
+        quard(
+            Color.parseColor(brownStart),
+            Color.parseColor(brownMiddle),
+            Color.parseColor(brownEnd),
+            Color.parseColor(brownTextColor)
+        )
 
     private var previousGradientTypeElement: Int = 0
     private var previousBackgroundColorElement: Int = 0
     private var previousGradientOrientationElement: Int = 0
 
 
-    fun getGradientBackground(): Drawable {
+    fun getGradientBackground(viewHeight: Int): Pair<Drawable, Int> {
         when (getRandomElementWithoutRepeat(1, 3, RandomElementType.GRADIENT_TYPE)) {
             1 -> return getLinearGradientBackground()
-            2 -> return getRadialGradientBackground()
+            2 -> return getRadialGradientBackground(viewHeight)
         }
         return getLinearGradientBackground()
     }
 
-    private fun getLinearGradientBackground(): Drawable {
+    private fun getLinearGradientBackground(): Pair<Drawable, Int> {
         val colorSet = getColorSet()
         val colors = intArrayOf(colorSet.first, colorSet.second, colorSet.third)
         val gd = GradientDrawable(
@@ -59,16 +91,16 @@ class GradientBackgroundHelper {
         )
         gd.gradientType = GradientDrawable.LINEAR_GRADIENT
         gd.cornerRadius = 0f
-        return gd
+        return Pair(gd, colorSet.fourth)
     }
 
-    private fun getRadialGradientBackground(): Drawable {
+    private fun getRadialGradientBackground(viewHeight: Int): Pair<Drawable, Int> {
         val colorSet = getColorSet()
         val gd = GradientDrawable()
         gd.colors = intArrayOf(colorSet.first, colorSet.second, colorSet.third)
         gd.gradientType = GradientDrawable.RADIAL_GRADIENT
-        gd.gradientRadius = 200.0f
-        return gd
+        gd.gradientRadius = viewHeight.toFloat()
+        return Pair(gd, colorSet.fourth)
     }
 
     private fun getLinearGradientOrientation(): GradientDrawable.Orientation {
@@ -87,7 +119,7 @@ class GradientBackgroundHelper {
         return GradientDrawable.LINEAR_GRADIENT
     }*/
 
-    private fun getColorSet(): Triple<Int, Int, Int> {
+    private fun getColorSet(): quard<Int, Int, Int, Int> {
         when (getRandomElementWithoutRepeat(1, 6, RandomElementType.BG_COLOR)) {
             1 -> return firstColorSet
             2 -> return secondColorSet

@@ -2,26 +2,37 @@ package com.captcha.captcha
 
 import android.content.Context
 import android.graphics.*
-import com.captcha.app.R
+import android.graphics.drawable.Drawable
 import java.util.concurrent.ThreadLocalRandom
 
 class MathCaptchaView(context: Context) : Captcha(context) {
 
-    constructor(context: Context, width: Int, height: Int, minNum: Int, maxNum: Int, textColor: Int) : this(
+    constructor(context: Context, width: Int, height: Int, minNum: Int, maxNum: Int) : this(
         context
     ) {
         parentWidth = width
         parentHeight = height
         minimumNumber = minNum
         maximumNumber = maxNum
-        captchaTextColor = textColor
         refreshCaptcha()
     }
 
-    override fun prepareBackground() {
-        background = gradientBackgroundHelper.getGradientBackground()
+    /**
+     * This function draws the gradient background
+     * @param drawable Gradient background
+     */
+    override fun prepareBackground(drawable: Drawable) {
+        background = drawable
     }
 
+    /**
+     * This function prepares the mathematical captcha based on the screen dimensions
+     * @param width Parent view's width
+     * @param height Parent view's height
+     * @param minNum Min number is from range of 0 to 9
+     * @param maxNum Parent view's height
+     * @param captchaTextColor Parent view's height
+     */
     override fun prepareCaptcha(width: Int, height: Int, minNum: Int, maxNum: Int, captchaTextColor: Int) {
         val minX = 0
         val minY = 0
@@ -62,6 +73,12 @@ class MathCaptchaView(context: Context) : Captcha(context) {
         finalY = ThreadLocalRandom.current().nextInt(rangeY.first.toInt(), rangeY.second.toInt()).toFloat()
     }
 
+    /**
+     * This function prepares the answer of the captcha
+     * @param firstDigit First number
+     * @param secondDigit Second number
+     * @param operator Whether + or -
+     */
     override fun prepareAnswer(firstDigit: Int, secondDigit: Int, operator: String) {
         answer = when (operator) {
             plusPair.first -> firstDigit.plus(secondDigit)
@@ -70,10 +87,22 @@ class MathCaptchaView(context: Context) : Captcha(context) {
         }
     }
 
+    /**
+     * This function verifies the answer is correct or not
+     * @param input Whatever user has given the answer
+     * @return result true or false
+     */
     override fun verifyAnswer(input: String): Boolean {
         return input.toInt() == answer
     }
 
+    /**
+     * This function prepares the sentence for text to speech
+     * @param firstDigit First number
+     * @param secondDigit Second number
+     * @param operator Whether + or -
+     * Note: For text to speech sdk requires plus or minus instead of + or -
+     */
     override fun prepareTextToSpeechSentence(firstDigit: Int, secondDigit: Int, operator: String) {
         ttsSentence = when (operator) {
             plusPair.first -> firstDigit.toString() + " " + plusPair.second + " " + secondDigit.toString() + " " + equalToPair.second
@@ -82,11 +111,18 @@ class MathCaptchaView(context: Context) : Captcha(context) {
         }
     }
 
+    /**
+     * This function provides the sentence of captcha for Text to speech
+     */
     override fun getTextToSpeechSentence(): String = ttsSentence
 
+    /**
+     * This function refreshes the captcha
+     */
     override fun refreshCaptcha() {
-        prepareBackground()
-        prepareCaptcha(parentWidth, parentHeight, minimumNumber, maximumNumber, captchaTextColor)
+        val colorPair = gradientBackgroundHelper.getGradientBackground(parentHeight)
+        prepareBackground(colorPair.first)
+        prepareCaptcha(parentWidth, parentHeight, minimumNumber, maximumNumber, colorPair.second)
     }
 
     private fun operator(math: Int): String {
@@ -100,7 +136,7 @@ class MathCaptchaView(context: Context) : Captcha(context) {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.rotate(
-            ThreadLocalRandom.current().nextInt(-5, 5).toFloat(), finalX,
+            ThreadLocalRandom.current().nextInt(rotateLeftLimit, rotateRightLimit).toFloat(), finalX,
             finalY
         )
         val chars = textToBeDrawn.toCharArray()
@@ -112,7 +148,7 @@ class MathCaptchaView(context: Context) : Captcha(context) {
             finalY = ThreadLocalRandom.current().nextInt(finalY.toInt() - maxMovementY, finalY.toInt() + maxMovementY)
                 .toFloat()
 
-            if (!(chars[i].toString().trim() == equalToPair.first || chars[i].toString().trim() == "+" || chars[i].toString().trim() == "-")) {
+            if (!(chars[i].toString().trim() == equalToPair.first || chars[i].toString().trim() == plusPair.first || chars[i].toString().trim() == minusPair.first)) {
                 paint.textSkewX = random.nextFloat() - random.nextFloat()
             }
             canvas.drawText(chars[i].toString(), finalX, finalY, paint)

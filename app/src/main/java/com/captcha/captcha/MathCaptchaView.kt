@@ -2,7 +2,9 @@ package com.captcha.captcha
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import java.util.concurrent.ThreadLocalRandom
 
 class MathCaptchaView(context: Context) : Captcha(context) {
@@ -19,10 +21,16 @@ class MathCaptchaView(context: Context) : Captcha(context) {
 
     /**
      * This function draws the gradient background
+     * @param captchaBitmap Captcha bitmap
      * @param drawable Gradient background
      */
-    override fun prepareBackground(drawable: Drawable) {
-        background = drawable
+    override fun drawCaptchaOnPreparedBackground(captchaBitmap: Bitmap, drawable: Drawable) {
+        background = LayerDrawable(
+            arrayOf(
+                drawable,
+                BitmapDrawable(resources, captchaBitmap)
+            )
+        )
     }
 
     /**
@@ -32,8 +40,9 @@ class MathCaptchaView(context: Context) : Captcha(context) {
      * @param minNum Min number is from range of 0 to 9
      * @param maxNum Parent view's height
      * @param captchaTextColor Parent view's height
+     * @return Bitmap Captcha's bitmap
      */
-    override fun prepareCaptcha(width: Int, height: Int, minNum: Int, maxNum: Int, captchaTextColor: Int) {
+    override fun prepareCaptchaBitmap(width: Int, height: Int, minNum: Int, maxNum: Int, captchaTextColor: Int): Bitmap {
         val minX = 0
         val minY = 0
         val defaultTextSize = 75F
@@ -50,7 +59,6 @@ class MathCaptchaView(context: Context) : Captcha(context) {
         prepareTextToSpeechSentence(one, two, operator(math))
         textToBeDrawn =
             one.toString().toCharArray()[0].toString() + operator(math) + two.toString().toCharArray()[0].toString() + equalToPair.first
-        paint = Paint()
         paint.color = captchaTextColor
         paint.textSize = defaultTextSize
 
@@ -71,6 +79,8 @@ class MathCaptchaView(context: Context) : Captcha(context) {
 
         finalX = ThreadLocalRandom.current().nextInt(rangeX.first.toInt(), rangeX.second.toInt()).toFloat()
         finalY = ThreadLocalRandom.current().nextInt(rangeY.first.toInt(), rangeY.second.toInt()).toFloat()
+
+        return getCaptchaBitmap()
     }
 
     /**
@@ -121,8 +131,8 @@ class MathCaptchaView(context: Context) : Captcha(context) {
      */
     override fun redrawCaptcha() {
         val colorPair = gradientBackgroundHelper.getGradientBackground(parentHeight)
-        prepareBackground(colorPair.first)
-        prepareCaptcha(parentWidth, parentHeight, minimumNumber, maximumNumber, colorPair.second)
+        val captchaBitmap = prepareCaptchaBitmap(parentWidth, parentHeight, minimumNumber, maximumNumber, colorPair.second)
+        drawCaptchaOnPreparedBackground(captchaBitmap, colorPair.first)
     }
 
     private fun operator(math: Int): String {
@@ -133,8 +143,9 @@ class MathCaptchaView(context: Context) : Captcha(context) {
         return plusPair.first
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+    private fun getCaptchaBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(parentWidth, parentHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
         canvas.rotate(
             ThreadLocalRandom.current().nextInt(rotateLeftLimit, rotateRightLimit).toFloat(), finalX,
             finalY
@@ -153,5 +164,6 @@ class MathCaptchaView(context: Context) : Captcha(context) {
             }
             canvas.drawText(chars[i].toString(), finalX, finalY, paint)
         }
+        return bitmap
     }
 }

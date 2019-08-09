@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
                 textToSpeech.language = Locale.UK
             }
         })
-
         btnRefreshCaptcha.setOnClickListener {
             captchaParentViewCustom.refreshCaptcha()
         }

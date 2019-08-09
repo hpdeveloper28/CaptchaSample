@@ -31,7 +31,7 @@ abstract class Captcha(context: Context) : View(context) {
     protected val equalToPair = Pair("=", "Equal to")
 
     abstract fun drawCaptchaOnPreparedBackground(captchaBitmap: Bitmap, drawable: Drawable)
-    abstract fun prepareCaptchaBitmap(width: Int, height: Int, minNum: Int, maxNum: Int, captchaTextColor: Int): Bitmap
+    abstract fun prepareCaptchaBitmap(width: Int, height: Int, captchaTextColor: Int): Bitmap
     abstract fun prepareAnswer(firstDigit: Int, secondDigit: Int, operator: String)
     abstract fun verifyAnswer(input: String): Boolean
     abstract fun prepareTextToSpeechSentence(firstDigit: Int, secondDigit: Int, operator: String)

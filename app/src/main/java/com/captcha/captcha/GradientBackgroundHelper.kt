@@ -3,7 +3,7 @@ package com.captcha.captcha
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import java.util.concurrent.ThreadLocalRandom
+import com.captcha.app.Utility
 
 class GradientBackgroundHelper {
 
@@ -76,7 +76,7 @@ class GradientBackgroundHelper {
 
 
     fun getGradientBackground(viewHeight: Int): Pair<Drawable, Int> {
-        when (getRandomElementWithoutRepeat(1, 3, RandomElementType.GRADIENT_TYPE)) {
+        when (getRandomElementWithoutRepeat(1, 2, RandomElementType.GRADIENT_TYPE)) {
             1 -> return getLinearGradientBackground()
             2 -> return getRadialGradientBackground(viewHeight)
         }
@@ -104,23 +104,15 @@ class GradientBackgroundHelper {
     }
 
     private fun getLinearGradientOrientation(): GradientDrawable.Orientation {
-        when (getRandomElementWithoutRepeat(1, 3, RandomElementType.GRADIENT_ORIENTATION)) {
+        when (getRandomElementWithoutRepeat(1, 2, RandomElementType.GRADIENT_ORIENTATION)) {
             1 -> return GradientDrawable.Orientation.TOP_BOTTOM
             2 -> return GradientDrawable.Orientation.LEFT_RIGHT
         }
         return GradientDrawable.Orientation.TOP_BOTTOM
     }
 
-    /*private fun getGradientType(): Int {
-        when (ThreadLocalRandom.current().nextInt(1, 3)) {
-            1 -> return GradientDrawable.LINEAR_GRADIENT
-            2 -> return GradientDrawable.RADIAL_GRADIENT
-        }
-        return GradientDrawable.LINEAR_GRADIENT
-    }*/
-
     private fun getColorSet(): quard<Int, Int, Int, Int> {
-        when (getRandomElementWithoutRepeat(1, 6, RandomElementType.BG_COLOR)) {
+        when (getRandomElementWithoutRepeat(1, 5, RandomElementType.BG_COLOR)) {
             1 -> return firstColorSet
             2 -> return secondColorSet
             3 -> return thirdColorSet
@@ -130,9 +122,8 @@ class GradientBackgroundHelper {
         return firstColorSet
     }
 
-
     private fun getRandomElementWithoutRepeat(origin: Int, bound: Int, previousElement: RandomElementType): Int {
-        val value = ThreadLocalRandom.current().nextInt(origin, bound)
+        val value = Utility.getRandomNumber(origin, bound)
         when (previousElement) {
             RandomElementType.GRADIENT_TYPE -> {
                 return if (previousGradientTypeElement == value) {

@@ -5,24 +5,40 @@
                 android:layout_height="match_parent"
                 tools:context=".MainActivity">
 
-    <com.captcha.captcha.CaptchaParentView
-            android:layout_margin="16dp"
-            android:id="@+id/captchaParentViewCustom"
-            android:layout_marginTop="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="120dp">
+    <RelativeLayout
+            android:id="@+id/captchaParentViewCustomParent"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+    >
 
-    </com.captcha.captcha.CaptchaParentView>
+        <com.captcha.captcha.CaptchaParentView
+                android:layout_margin="16dp"
+                android:id="@+id/captchaParentViewCustom"
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_toStartOf="@+id/rlTest"
+                android:layout_height="120dp">
 
-    <Button android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:id="@+id/btnRefreshCaptcha"
-            android:layout_below="@+id/captchaParentViewCustom"
-            android:text="Refresh Captcha"
-            android:layout_marginTop="50dp"/>
+        </com.captcha.captcha.CaptchaParentView>
+
+        <RelativeLayout
+                android:id="@+id/rlTest"
+                android:layout_alignParentEnd="true"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content">
+
+            <Button android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:id="@+id/btnRefreshCaptcha"
+                    android:text="RC"
+                    android:layout_marginTop="50dp"/>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
 
     <Button android:layout_width="match_parent" android:layout_height="wrap_content"
             android:id="@+id/btnSpeakCaptcha"
-            android:layout_below="@+id/btnRefreshCaptcha"
+            android:layout_below="@+id/captchaParentViewCustomParent"
             android:text="Speak"
             android:layout_marginTop="10dp"/>
 
